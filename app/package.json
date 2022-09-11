@@ -1,0 +1,22 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/opentelemetry-cloud-trace-exporter": "^1.1.0",
+    "@opentelemetry/api": "^1.2.0",
+    "@opentelemetry/instrumentation-express": "^0.31.0",
+    "@opentelemetry/instrumentation-http": "^0.32.0",
+    "@opentelemetry/sdk-trace-base": "^1.6.0",
+    "@opentelemetry/sdk-trace-node": "^1.6.0",
+    "express": "^4.18.1"
+  }
+}

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kanata-deployment
+  labels:
+    app: kanata
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kanata
+  template:
+    metadata:
+      labels:
+        app: kanata
+    spec:
+      containers:
+      - name: kanata
+        image: sisisin/gke-node:20220911-222651
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        env:
+          - name: NODE_ENV
+            value: "production"
+          - name: PORT
+            value: '80'
