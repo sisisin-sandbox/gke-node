@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: kanata
-        image: sisisin/gke-node:20220911-222651
+        image: sisisin/gke-node:20220923-221317
         ports:
         - containerPort: 80
         resources:
@@ -28,3 +28,15 @@ spec:
             value: "production"
           - name: PORT
             value: '80'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kanata-service2
+spec:
+  type: LoadBalancer
+  selector:
+    app: kanata
+  ports:
+    - port: 80
+      targetPort: 80

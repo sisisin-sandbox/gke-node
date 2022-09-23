@@ -1,2 +1,3 @@
 cred/*
 !cred/.gitkeep
+.local.envrc
