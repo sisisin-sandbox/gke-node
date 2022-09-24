@@ -18,32 +18,20 @@ jobs:
         working-directory: ./infra
     steps:
       - uses: actions/checkout@v3
-        working-directory: ${{ github.workspace }}
 
       - uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: 'yarn'
+          cache-dependency-path: infra/yarn.lock
 
-      # https://github.com/actions/cache/blob/main/examples.md#node---yarn-2
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-        shell: bash
-
-      - uses: actions/cache@v3
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
       - run: yarn install
 
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v0'
         with:
-          workload_identity_provider: 'projects/daken-counter-4be99/locations/global/workloadIdentityPools/ci-pool-id/providers/ci-pool-oidc-provider-id'
+          workload_identity_provider: 'projects/260114795237/locations/global/workloadIdentityPools/ci-pool-id/providers/ci-pool-oidc-provider-id'
           service_account: 'pulumi-sa@daken-counter-4be99.iam.gserviceaccount.com'
 
       # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
@@ -55,6 +43,6 @@ jobs:
         with:
           command: preview
           stack-name: dev
-          work-dir: ./_bootstrap
+          work-dir: ./infra/_bootstrap
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
