@@ -1,0 +1,3 @@
+name: main-daken-counter
+description: gcp project main resource definition
+runtime: nodejs
