@@ -1,4 +1,4 @@
-name: preview infra/bootstrap
+name: deploy infra/bootstrap
 on:
   push:
     branches:
@@ -6,19 +6,19 @@ on:
     paths:
       - 'infra/_bootstrap/**/*'
 jobs:
-  pulumi_preview:
+  pulumi_deploy:
     # Add "id-token" with the intended permissions.
     permissions:
       contents: 'read'
       id-token: 'write'
-    name: run pulumi preview
+    name: run pulumi deploy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
       - uses: ./.github/actions/prepare-infra
 
-      - name: Preview infrastructure update
+      - name: Deploy infrastructure update
         uses: pulumi/actions@v3
         with:
           command: up
