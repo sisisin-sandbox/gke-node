@@ -1,4 +1,4 @@
-name: deploy infra/bootstrap
+name: preview infra/bootstrap
 on:
   pull_request:
     branches:
@@ -13,8 +13,13 @@ jobs:
       id-token: 'write'
     name: run pulumi preview
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./infra
     steps:
       - uses: actions/checkout@v3
+        working-directory: ${{ github.workspace }}
+
       - uses: actions/setup-node@v3
         with:
           node-version: 16
@@ -29,7 +34,7 @@ jobs:
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('infra/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: yarn install
@@ -50,6 +55,6 @@ jobs:
         with:
           command: preview
           stack-name: dev
-          work-dir: infra/_bootstrap
+          work-dir: ./_bootstrap
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
