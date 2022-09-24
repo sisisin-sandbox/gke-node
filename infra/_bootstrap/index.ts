@@ -45,10 +45,13 @@ new gcp.iam.WorkloadIdentityPoolProvider('ci-pool-oidc-provider', {
   //   assertion.job_workflow_ref.startsWith("${repo}/.github/workflows/deploy-infra-bootstrap.yaml")
   // `,
   attributeCondition: `
-    assertion.job_workflow_ref.startsWith("${repo}/.github/workflows/preview-infra-main.yaml") ||
-    assertion.job_workflow_ref.startsWith("${repo}/.github/workflows/deploy-infra-main.yaml") ||
-    assertion.job_workflow_ref.startsWith("${repo}/.github/workflows/preview-infra-bootstrap.yaml") ||
-    assertion.job_workflow_ref.startsWith("${repo}/.github/workflows/deploy-infra-bootstrap.yaml")
+    assertion.job_workflow_ref.startsWith("${repo}/.github/workflows) &&
+    (
+      assertion.job_workflow_ref.contains("preview-infra-main.yaml") ||
+      assertion.job_workflow_ref.contains("deploy-infra-main.yaml") ||
+      assertion.job_workflow_ref.contains("preview-infra-bootstrap.yaml") ||
+      assertion.job_workflow_ref.contains("deploy-infra-bootstrap.yaml")
+    )
   `,
 });
 
