@@ -1,0 +1,3 @@
+name: bootstrap-daken-counter
+description: gcp project bootstrap definition
+runtime: nodejs

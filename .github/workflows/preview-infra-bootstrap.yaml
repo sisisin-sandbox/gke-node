@@ -1,6 +1,6 @@
 name: preview infra/bootstrap
 on:
-  push:
+  pull_request:
     branches:
       - main
     paths:
@@ -21,7 +21,7 @@ jobs:
       - name: Preview infrastructure update
         uses: pulumi/actions@v3
         with:
-          command: up
+          command: preview
           stack-name: dev
           work-dir: ./infra/_bootstrap
         env:
