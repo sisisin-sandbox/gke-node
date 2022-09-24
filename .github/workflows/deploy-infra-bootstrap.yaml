@@ -1,0 +1,55 @@
+name: deploy infra/bootstrap
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'infra/_bootstrap/**/*'
+jobs:
+  pulumi_preview:
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    name: run pulumi preview
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # https://github.com/actions/cache/blob/main/examples.md#node---yarn-2
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+        shell: bash
+
+      - uses: actions/cache@v3
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('infra/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - run: yarn install
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          workload_identity_provider: 'projects/daken-counter-4be99/locations/global/workloadIdentityPools/ci-pool-id/providers/ci-pool-oidc-provider-id'
+          service_account: 'pulumi-sa@daken-counter-4be99.iam.gserviceaccount.com'
+
+      # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v0'
+
+      - name: Preview infrastructure update
+        uses: pulumi/actions@v3
+        with:
+          command: preview
+          stack-name: dev
+          work-dir: infra/_bootstrap
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
