@@ -8,13 +8,12 @@ const pulumiSa = new gcp.serviceaccount.Account('pulumi-sa', {
   displayName: 'pulumi service account',
 });
 
-const pulumiSaRoles = [
+[
   'roles/editor',
   'roles/iam.serviceAccountAdmin',
   'roles/iam.workloadIdentityPoolAdmin',
   'roles/resourcemanager.projectIamAdmin',
-];
-pulumiSaRoles.forEach((role) => {
+].forEach((role) => {
   new gcp.projects.IAMMember(`pulumi-sa-roles-${role}`, {
     project,
     role,
@@ -41,9 +40,13 @@ new gcp.iam.WorkloadIdentityPoolProvider('ci-pool-oidc-provider', {
     'attribute.actor': 'assertion.actor',
     'attribute.aud': 'assertion.aud',
   },
+  // attributeCondition: `
+  //   assertion.job_workflow_ref.startsWith("${repo}/.github/workflows/preview-infra-bootstrap.yaml") ||
+  //   assertion.job_workflow_ref.startsWith("${repo}/.github/workflows/deploy-infra-bootstrap.yaml")
+  // `,
   attributeCondition: `
-    // assertion.job_workflow_ref.startsWith("${repo}/.github/workflows/preview-infra-main.yaml") ||
-    // assertion.job_workflow_ref.startsWith("${repo}/.github/workflows/deploy-infra-main.yaml") ||
+    assertion.job_workflow_ref.startsWith("${repo}/.github/workflows/preview-infra-main.yaml") ||
+    assertion.job_workflow_ref.startsWith("${repo}/.github/workflows/deploy-infra-main.yaml") ||
     assertion.job_workflow_ref.startsWith("${repo}/.github/workflows/preview-infra-bootstrap.yaml") ||
     assertion.job_workflow_ref.startsWith("${repo}/.github/workflows/deploy-infra-bootstrap.yaml")
   `,
