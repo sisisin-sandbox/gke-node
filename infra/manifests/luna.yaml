@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kanata-deployment
+  name: luna-deployment
   labels:
-    app: kanata
+    app: luna
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kanata
+      app: luna
   template:
     metadata:
       labels:
-        app: kanata
+        app: luna
     spec:
       containers:
-      - name: kanata
+      - name: luna
         image: sisisin/gke-node:20220924-002231
         ports:
         - containerPort: 80
@@ -32,23 +32,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kanata-service
-spec:
-  type: LoadBalancer
-  selector:
-    app: kanata
-  ports:
-    - port: 80
-      targetPort: 80
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: kanata-cluster-service
+  name: luna-cluster-service
 spec:
   type: ClusterIP
   selector:
-    app: kanata
+    app: luna
   ports:
     - port: 8080
       targetPort: 80
